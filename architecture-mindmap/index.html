@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RevRa — Platform Architecture Mindmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg2: #0f1629;
+  --bg3: #131c35;
+  --bg4: #1a2340;
+  --border: #1e2d4d;
+  --text: #e2e8f0;
+  --text-dim: #7b8ab8;
+  --text-dimmer: #4a5a80;
+  --accent: #6366f1;
+  --accent2: #818cf8;
+  --accent-glow: rgba(99,102,241,0.15);
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.12);
+  --orange: #f97316;
+  --orange-dim: rgba(249,115,22,0.12);
+  --red: #ef4444;
+  --purple: #a855f7;
+  --cyan: #06b6d4;
+  --pink: #ec4899;
+  --yellow: #eab308;
+  --amber: #f59e0b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── TOP NAV ───────────────────────────────────────────── */
+.topnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  background: rgba(10,14,26,0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  z-index: 1000;
+  gap: 12px;
+}
+
+.topnav .logo {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+  margin-right: auto;
+}
+
+.topnav .logo span { color: var(--text); }
+
+.topnav .nav-item {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.topnav .nav-item:hover { background: var(--bg3); color: var(--text); }
+
+.topnav .nav-item.active {
+  background: var(--accent-glow);
+  border-color: rgba(99,102,241,0.3);
+  color: var(--accent2);
+}
+
+.topnav .nav-item .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--text-dimmer);
+}
+
+.topnav .nav-item.active .dot { background: var(--accent); }
+
+/* ── MAIN CONTAINER ─────────────────────────────────── */
+.main {
+  padding-top: 56px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.view {
+  display: none;
+  height: 100%;
+  overflow-y: auto;
+  padding: 32px 40px 60px;
+}
+
+.view.active { display: block; }
+
+/* ── SECTION HEADERS ─────────────────────────────────── */
+.section-header { margin-bottom: 32px; }
+.section-header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.8px; color: var(--text); margin-bottom: 6px; }
+.section-header p { font-size: 14px; color: var(--text-dim); }
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title .icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* ── STATUS BADGES ──────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.badge .dot { width: 5px; height: 5px; border-radius: 50%; }
+.badge.built { background: var(--green-dim); color: var(--green); }
+.badge.built .dot { background: var(--green); }
+.badge.pending { background: var(--orange-dim); color: var(--orange); }
+.badge.pending .dot { background: var(--orange); }
+.badge.onhold { background: rgba(161,132,250,0.1); color: var(--purple); }
+.badge.onhold .dot { background: var(--purple); }
+.badge.deprecated { background: rgba(239,68,68,0.1); color: var(--red); }
+.badge.deprecated .dot { background: var(--red); }
+.badge.merged { background: rgba(234,179,8,0.1); color: var(--yellow); }
+.badge.merged .dot { background: var(--yellow); }
+
+/* ── CARDS ───────────────────────────────────────────── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.card h2 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.card .subtitle { font-size: 12px; color: var(--text-dimmer); margin-bottom: 20px; }
+.card h3 {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--text-dimmer); margin-bottom: 12px; margin-top: 20px;
+}
+.card h3:first-child { margin-top: 0; }
+
+/* ── GRID LAYOUTS ────────────────────────────────────── */
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.col-span-2 { grid-column: span 2; }
+.col-span-3 { grid-column: span 3; }
+
+/* ── TAGS ────────────────────────────────────────────── */
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.tag.highlight { background: var(--accent-glow); border-color: rgba(99,102,241,0.3); color: var(--accent2); }
+.tag.green { background: var(--green-dim); border-color: rgba(34,197,94,0.2); color: var(--green); }
+.tag.orange { background: var(--orange-dim); border-color: rgba(249,115,22,0.2); color: var(--orange); }
+.tag.purple { background: rgba(161,132,250,0.1); border-color: rgba(161,132,250,0.2); color: var(--purple); }
+.tag.red { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.2); color: var(--red); }
+.tag.yellow { background: rgba(234,179,8,0.1); border-color: rgba(234,179,8,0.2); color: var(--yellow); }
+.tag.cyan { background: rgba(6,182,212,0.1); border-color: rgba(6,182,212,0.2); color: var(--cyan); }
+
+/* ── INTEGRATION LIST ────────────────────────────────── */
+.int-list { display: flex; flex-direction: column; gap: 8px; }
+
+.int-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg3);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.int-item .name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.int-item .meta { display: flex; align-items: center; gap: 12px; }
+
+/* ── PAGE ITEM ───────────────────────────────────────── */
+.page-item {
+  padding: 14px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.page-item:hover { border-color: var(--accent); background: var(--accent-glow); }
+
+.page-item .path {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent2);
+  margin-bottom: 4px;
+}
+
+.page-item .name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.page-item .features { font-size: 11px; color: var(--text-dimmer); line-height: 1.4; }
+
+/* ── FLOW DIAGRAM ─────────────────────────────────────── */
+.flow-diagram {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  overflow-x: auto;
+}
+
+.flow-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  min-width: 900px;
+}
+
+.flow-row:last-child { margin-bottom: 0; }
+
+.flow-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 1px solid;
+  min-width: 140px;
+  text-align: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.flow-node .fn-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.flow-node .fn-sub { font-size: 10px; opacity: 0.7; }
+
+.flow-node.clerk { border-color: rgba(99,102,241,0.4); background: rgba(99,102,241,0.08); }
+.flow-node.clerk .fn-label { color: var(--accent2); }
+.flow-node.supabase { border-color: rgba(34,197,94,0.4); background: rgba(34,197,94,0.06); }
+.flow-node.supabase .fn-label { color: var(--green); }
+.flow-node.nextjs { border-color: rgba(6,182,212,0.4); background: rgba(6,182,212,0.06); }
+.flow-node.nextjs .fn-label { color: var(--cyan); }
+.flow-node.emma { border-color: rgba(168,85,247,0.4); background: rgba(168,85,247,0.08); }
+.flow-node.emma .fn-label { color: var(--purple); }
+.flow-node.sendillo { border-color: rgba(249,115,22,0.4); background: rgba(249,115,22,0.06); }
+.flow-node.sendillo .fn-label { color: var(--orange); }
+.flow-node.stripe { border-color: rgba(236,72,153,0.4); background: rgba(236,72,153,0.06); }
+.flow-node.stripe .fn-label { color: var(--pink); }
+.flow-node.channels { border-color: rgba(234,179,8,0.4); background: rgba(234,179,8,0.06); }
+.flow-node.channels .fn-label { color: var(--yellow); }
+.flow-node.railway { border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.06); }
+.flow-node.railway .fn-label { color: var(--red); }
+
+.flow-arrow { color: var(--text-dimmer); font-size: 18px; padding: 0 8px; flex-shrink: 0; }
+
+/* ── TABLE ────────────────────────────────────────────── */
+.schema-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.schema-table th {
+  text-align: left; padding: 8px 12px; background: var(--bg4);
+  color: var(--text-dim); font-weight: 600; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border);
+}
+.schema-table td {
+  padding: 8px 12px; border-bottom: 1px solid rgba(30,45,77,0.5);
+  color: var(--text-dim); vertical-align: top;
+}
+.schema-table tr:hover td { background: var(--bg3); }
+.schema-table .col-name { font-family: 'JetBrains Mono', monospace; color: var(--cyan); font-size: 12px; font-weight: 500; }
+.schema-table .col-type { font-family: 'JetBrains Mono', monospace; color: var(--amber); font-size: 11px; }
+.schema-table .col-key { color: var(--pink); font-size: 11px; }
+.schema-table .col-note { color: var(--text-dimmer); font-size: 11px; }
+
+/* ── ROADMAP ─────────────────────────────────────────── */
+.roadmap { display: flex; flex-direction: column; gap: 12px; }
+
+.phase {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.phase-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.phase-num {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+}
+
+.phase.done .phase-num { background: var(--green-dim); color: var(--green); }
+.phase.current .phase-num { background: var(--accent-glow); color: var(--accent2); }
+.phase.future .phase-num { background: var(--bg4); color: var(--text-dimmer); }
+.phase.deprecated .phase-num { background: rgba(239,68,68,0.1); color: var(--red); }
+
+.phase-name { font-size: 14px; font-weight: 700; color: var(--text); flex: 1; }
+.phase-date { font-size: 12px; color: var(--text-dimmer); font-family: 'JetBrains Mono', monospace; }
+
+.phase-body { padding: 14px 18px; display: flex; flex-direction: column; gap: 8px; }
+
+.phase-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: var(--text-dim);
+}
+
+.phase-item .check {
+  width: 16px; height: 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 9px;
+}
+
+.phase.done .phase-item .check { background: var(--green-dim); color: var(--green); }
+.phase.current .phase-item .check { background: var(--accent-glow); color: var(--accent2); }
+.phase.future .phase-item .check { background: var(--bg4); color: var(--text-dimmer); }
+.phase.deprecated .phase-item .check { background: rgba(239,68,68,0.1); color: var(--red); }
+
+/* ── STATS ──────────────────────────────────────────── */
+.stats-row { display: flex; gap: 16px; margin-bottom: 24px; }
+.stat-box { flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.stat-box .val { font-size: 32px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--text); margin-bottom: 4px; }
+.stat-box .label { font-size: 12px; color: var(--text-dim); }
+
+/* ── TABS ────────────────────────────────────────────── */
+.tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+.tab-btn { padding: 8px 16px; background: none; border: none; color: var(--text-dim); font-size: 13px; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent); }
+
+/* ── SEARCH ────────────────────────────────────────────── */
+.search-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 16px; margin-bottom: 24px; max-width: 400px;
+}
+.search-bar input { background: none; border: none; outline: none; color: var(--text); font-size: 13px; width: 100%; }
+.search-bar input::placeholder { color: var(--text-dimmer); }
+
+/* ── MISC ────────────────────────────────────────────── */
+.mono { font-family: 'JetBrains Mono', monospace; }
+.dim { color: var(--text-dim); }
+.dimmer { color: var(--text-dimmer); }
+.accent { color: var(--accent2); }
+.green { color: var(--green); }
+.orange { color: var(--orange); }
+.purple { color: var(--purple); }
+.cyan { color: var(--cyan); }
+
+hr.sep { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 11px; }
+.mb-4 { margin-bottom: 4px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.gap-6 { gap: 6px; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+
+/* ── GAP SECTION ─────────────────────────────────────── */
+.gap-item {
+  display: flex; gap: 12px; padding: 14px 16px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; margin-bottom: 10px;
+}
+
+.gap-item .priority {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
+}
+
+.gap-item.critical .priority { background: var(--red); }
+.gap-item.significant .priority { background: var(--orange); }
+.gap-item.minor .priority { background: var(--yellow); }
+
+.gap-item .content { flex: 1; }
+.gap-item .title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.gap-item .desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+.gap-item .tags-row { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="logo">Rev<span>Ra</span></div>
+  <a href="#" class="nav-item active" data-view="overview"><span class="dot"></span>Overview</a>
+  <a href="#" class="nav-item" data-view="pages"><span class="dot"></span>Pages</a>
+  <a href="#" class="nav-item" data-view="database"><span class="dot"></span>Database</a>
+  <a href="#" class="nav-item" data-view="integrations"><span class="dot"></span>Integrations</a>
+  <a href="#" class="nav-item" data-view="flows"><span class="dot"></span>Data Flows</a>
+  <a href="#" class="nav-item" data-view="roadmap"><span class="dot"></span>Roadmap</a>
+  <a href="#" class="nav-item" data-view="gaps"><span class="dot"></span>Gaps & Action</a>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- VIEW: OVERVIEW -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="view active" id="view-overview">
+
+<div class="stats-row mb-24">
+  <div class="stat-box"><div class="val">31</div><div class="label">Frontend Pages</div></div>
+  <div class="stat-box"><div class="val">54</div><div class="label">API Routes</div></div>
+  <div class="stat-box"><div class="val">25</div><div class="label">Database Tables</div></div>
+  <div class="stat-box"><div class="val">6</div><div class="label">External Integrations</div></div>
+  <div class="stat-box"><div class="val">3</div><div class="label">Dashboards</div></div>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(99,102,241,0.15);color:var(--accent2)">⬡</span>
+  Platform Architecture — Big Picture
+</div>
+
+<div class="flow-diagram mb-24">
+  <div class="flow-row">
+    <div class="flow-node railway"><div class="fn-label">Railway</div><div class="fn-sub">app.letsrevra.com</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node clerk"><div class="fn-label">Clerk</div><div class="fn-sub">Authentication</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node supabase"><div class="fn-label">Supabase</div><div class="fn-sub">PostgreSQL + Auth</div></div>
+    <span class="flow-arrow">↔</span>
+    <div class="flow-node nextjs"><div class="fn-label">Next.js App</div><div class="fn-sub">API Routes + Pages</div></div>
+  </div>
+  <div class="flow-row">
+    <div style="min-width:200px"></div>
+    <span class="flow-arrow">↓</span>
+    <div class="flow-node emma" style="min-width:160px"><div class="fn-label">Emma AI</div><div class="fn-sub">Lunar Olivia</div></div>
+    <span class="flow-arrow">+</span>
+    <div class="flow-node sendillo" style="min-width:160px"><div class="fn-label">Sendillo</div><div class="fn-sub">Bulk SMS</div></div>
+    <span class="flow-arrow">+</span>
+    <div class="flow-node stripe" style="min-width:140px"><div class="fn-label">Stripe</div><div class="fn-sub">Payments (future)</div></div>
+  </div>
+  <div class="flow-row">
+    <div style="min-width:200px"></div>
+    <span class="flow-arrow">↓</span>
+    <div class="flow-node channels" style="min-width:160px"><div class="fn-label">Emma Channels</div><div class="fn-sub">WhatsApp, IG, FB, Telegram</div></div>
+    <span class="flow-arrow">+</span>
+    <div class="flow-node channels" style="min-width:160px"><div class="fn-label">Voice</div><div class="fn-sub">Twilio / Retell (Emma)</div></div>
+    <span class="flow-arrow">+</span>
+    <div class="flow-node channels" style="min-width:140px"><div class="fn-label">Calendar</div><div class="fn-sub">Google OAuth (via Emma)</div></div>
+  </div>
+</div>
+
+<div class="grid-3 mb-24">
+  <div class="card">
+    <h2>Authentication</h2>
+    <p class="subtitle">Clerk + Supabase bridge</p>
+    <div class="tags mt-12">
+      <span class="tag highlight">Clerk Auth</span>
+      <span class="tag">Webhook sync</span>
+      <span class="tag">RLS policy</span>
+      <span class="tag">3 roles</span>
+    </div>
+    <div class="mt-12 text-sm dim">
+      Clerk user.created → Supabase upsert<br>
+      Role from public_metadata (default: agent)<br>
+      Superadmin / Admin / Agent hierarchy
+    </div>
+  </div>
+  <div class="card">
+    <h2>Database</h2>
+    <p class="subtitle">Supabase PostgreSQL with RLS</p>
+    <div class="tags mt-12">
+      <span class="tag green">25 tables</span>
+      <span class="tag green">15 enums</span>
+      <span class="tag">9 triggers</span>
+      <span class="tag">7 RPCs</span>
+    </div>
+    <div class="mt-12 text-sm dim">
+      Workspaces (multi-tenant) → Users → Leads<br>
+      Conversations → Messages (all channels)<br>
+      Campaigns, Tasks, Calls, Calendar
+    </div>
+  </div>
+  <div class="card">
+    <h2>AI Engine</h2>
+    <p class="subtitle">Emma AI (LunarGrowth) — unified</p>
+    <div class="tags mt-12">
+      <span class="tag purple">WhatsApp</span>
+      <span class="tag purple">Instagram</span>
+      <span class="tag purple">FB Messenger</span>
+      <span class="tag purple">Telegram</span>
+      <span class="tag">Voice/Calls</span>
+      <span class="tag">Calendar OAuth</span>
+    </div>
+    <div class="mt-12 text-sm dim">
+      Lead push sync • Status updates •<br>
+      Messaging connect links (Zernio OAuth) •<br>
+      Google Calendar connect link
+    </div>
+  </div>
+</div>
+
+<div class="grid-2 mb-24">
+  <div class="card">
+    <h2>SMS Engine — Sendillo</h2>
+    <p class="subtitle">Bulk SMS/MMS + webhook pipeline</p>
+    <div class="tags mt-12">
+      <span class="tag orange">Bulk SMS API</span>
+      <span class="tag orange">Phone numbers</span>
+      <span class="tag orange">Campaign wizard</span>
+      <span class="tag orange">Keyword routing</span>
+    </div>
+    <div class="mt-12 text-sm dim">
+      5-step campaign wizard → sendBulkSMS() →<br>
+      inbound.received → keyword match →<br>
+      Emma push on positive, opt-out on STOP
+    </div>
+  </div>
+  <div class="card">
+    <h2>AI Agent — RevRa Chat</h2>
+    <p class="subtitle">Floating chat + 13 LLM tools (future)</p>
+    <div class="tags mt-12">
+      <span class="tag yellow">UI scaffold done</span>
+      <span class="tag">No backend yet</span>
+      <span class="tag">13 tool definitions</span>
+    </div>
+    <div class="mt-12 text-sm dim">
+      Floating RevRaAIChat on all user pages.<br>
+      lib/ai/tools.ts defines 13 tools.<br>
+      Connected to Emma AI when developed.
+    </div>
+  </div>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(239,68,68,0.12);color:var(--red)">◈</span>
+  Critical Architecture Notes
+</div>
+
+<div class="grid-2 mb-24">
+  <div class="card" style="border-color:var(--red);background:rgba(239,68,68,0.03);">
+    <div class="tags">
+      <span class="tag red">🗑️ Merged</span>
+      <span class="tag red">/user/leads</span>
+      <span class="tag red">/user/texts</span>
+    </div>
+    <h2 class="mt-8">Merged Pages</h2>
+    <p class="subtitle">/user/leads → /user/pipeline (redirect)</p>
+    <p class="subtitle">/user/texts → /user/conversations (redirect)</p>
+    <div class="mt-12 text-sm dim">
+      /user/leads: replaced by enhanced pipeline list view<br>
+      /user/texts: merged into /user/conversations<br>
+      Both now redirect to their canonical pages.
+    </div>
+  </div>
+  <div class="card" style="border-color:rgba(99,102,241,0.3);background:rgba(99,102,241,0.03);">
+    <div class="tags">
+      <span class="tag highlight">✅ Emma env var only</span>
+    </div>
+    <h2 class="mt-8">Emma API Key — Platform Level</h2>
+    <p class="subtitle">Single Railway env var, no DB storage</p>
+    <div class="mt-12 text-sm dim">
+      EMMA_API_KEY = Railway env var<br>
+      No emma_api_key column in workspaces table<br>
+      Superadmin setup → verifies key only, doesn't store
+    </div>
+  </div>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(34,197,94,0.12);color:var(--green)">◈</span>
+  Database Schema — 25 Tables
+</div>
+
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ workspaces</div>
+    <div class="text-xs dim">Multi-tenant container</div>
+    <div class="text-xs dimmer mt-4">id, name, slug, plan</div>
+    <div class="text-xs dimmer">twilio, loopmessages, sendgrid</div>
+    <div class="text-xs dimmer">google_calendar_creds (JSONB)</div>
+  </div>
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ users</div>
+    <div class="text-xs dim">Clerk bridge + roles</div>
+    <div class="text-xs dimmer mt-4">clerk_user_id (UNIQUE)</div>
+    <div class="text-xs dimmer">role: superadmin|admin|agent</div>
+    <div class="text-xs dimmer">emma_client_id (Phase 3)</div>
+  </div>
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ leads</div>
+    <div class="text-xs dim">Core CRM records</div>
+    <div class="text-xs dimmer mt-4">first_name, phone, email</div>
+    <div class="text-xs dimmer">pipeline_stage, score</div>
+    <div class="text-xs dimmer">opted_out, enrichment_data</div>
+  </div>
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ campaigns</div>
+    <div class="text-xs dim">Bulk SMS/MMS via Sendillo</div>
+    <div class="text-xs dimmer mt-4">sender_phone_id FK</div>
+    <div class="text-xs dimmer">positive/optout keywords</div>
+    <div class="text-xs dimmer">sent, delivered, failed, opted_out</div>
+  </div>
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ messages</div>
+    <div class="text-xs dim">All channel messaging</div>
+    <div class="text-xs dimmer mt-4">channel: sms|imsg|wa|rcs|email</div>
+    <div class="text-xs dimmer">direction, body, external_id</div>
+    <div class="text-xs dimmer">campaign_id FK</div>
+  </div>
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ conversations</div>
+    <div class="text-xs dim">Per-lead message threads</div>
+    <div class="text-xs dimmer mt-4">unread_count (Phase 3)</div>
+    <div class="text-xs dimmer">last_message, last_message_at</div>
+  </div>
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ calls</div>
+    <div class="text-xs dim">Voice logs + AI transcription</div>
+    <div class="text-xs dimmer mt-4">twilio_call_sid (UNIQUE)</div>
+    <div class="text-xs dimmer">transcription, ai_summary, ai_disposition</div>
+  </div>
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ emma_campaigns</div>
+    <div class="text-xs dim">AI outbound campaigns</div>
+    <div class="text-xs dimmer mt-4">queue_size, completed, failed</div>
+  </div>
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ emma_queue</div>
+    <div class="text-xs dim">Outbound dialer/SMS queue</div>
+    <div class="text-xs dimmer mt-4">phone, type: call|sms|email</div>
+    <div class="text-xs dimmer">status: pending|in_progress|completed|failed</div>
+  </div>
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ integrations</div>
+    <div class="text-xs dim">Per-workspace providers</div>
+    <div class="text-xs dimmer mt-4">provider enum (15 values)</div>
+    <div class="text-xs dimmer">credentials (JSONB)</div>
+  </div>
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ sendillo_phone_numbers</div>
+    <div class="text-xs dim">Agent phone numbers (Phase 4)</div>
+    <div class="text-xs dimmer mt-4">agent_id FK, phone_number UNIQUE</div>
+    <div class="text-xs dimmer">label, is_active</div>
+  </div>
+  <div class="card" style="padding:16px;">
+    <div class="mono text-sm" style="color:var(--cyan);margin-bottom:8px;">◉ webhooks_log</div>
+    <div class="text-xs dim">Incoming webhook audit</div>
+    <div class="text-xs dimmer mt-4">provider, event_type, payload</div>
+    <div class="text-xs dimmer">processed, processed_at</div>
+  </div>
+</div>
+
+<div class="section-title mb-16 mt-24">
+  <span class="icon" style="background:rgba(234,179,8,0.12);color:var(--yellow)">◈</span>
+  All Other Tables
+</div>
+
+<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ pipeline_stages</div><div class="text-xs dimmer mt-4">Custom stages per workspace</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ pipeline_moves</div><div class="text-xs dimmer mt-4">Stage change audit log (trigger)</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ appointments</div><div class="text-xs dimmer mt-4">Scheduled lead appointments</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ workflows</div><div class="text-xs dimmer mt-4">JSONB node graph automation</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ channels</div><div class="text-xs dimmer mt-4">Team messaging (Slack-like)</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ channel_messages</div><div class="text-xs dimmer mt-4">Team channel messages</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ ai_conversations</div><div class="text-xs dimmer mt-4">AI agent chat sessions</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ ai_messages</div><div class="text-xs dimmer mt-4">AI messages + tool_calls/results</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ tasks</div><div class="text-xs dimmer mt-4">Agent to-dos (5 types, 4 priorities)</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ calendar_events</div><div class="text-xs dimmer mt-4">Google Calendar synced</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ ai_providers</div><div class="text-xs dimmer mt-4">Superadmin AI config</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ providers</div><div class="text-xs dimmer mt-4">Superadmin msg provider config</div></div>
+  <div class="card" style="padding:14px;"><div class="mono text-xs" style="color:var(--cyan);">◉ default_pipeline_stages</div><div class="text-xs dimmer mt-4">Global stage templates</div></div>
+</div>
+
+</div><!-- /overview -->
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- VIEW: PAGES -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="view" id="view-pages">
+
+<div class="search-bar">
+  <span style="color:var(--text-dimmer)">⌕</span>
+  <input placeholder="Filter pages..." oninput="filterPages(this.value)">
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(99,102,241,0.15);color:var(--accent2)">◉</span>
+  User Dashboard — 14 pages (all in sidebar nav)
+  <span class="badge built"><span class="dot"></span> Built + Nav Wired</span>
+</div>
+
+<div class="grid-4 mb-24">
+  <div class="page-item"><div class="path">/user/page.tsx</div><div class="name">Home (Emma AI)</div><div class="features">Emma AI orb hero, quick actions, agent status, sparkline</div></div>
+  <div class="page-item"><div class="path">/user/conversations/page.tsx</div><div class="name">Conversations ★</div><div class="features">3-panel chat, lead info rail, message input. Also absorbs /user/texts</div></div>
+  <div class="page-item"><div class="path">/user/pipeline/page.tsx</div><div class="name">Pipeline ★</div><div class="features">Kanban + List view. List has categorized stage grouping, filters (type, source, score). Absorbs /user/leads</div></div>
+  <div class="page-item"><div class="path">/user/campaigns/page.tsx</div><div class="name">Campaigns</div><div class="features">5-step wizard (Setup → Compose → Select Leads → Keywords → Review)</div></div>
+  <div class="page-item"><div class="path">/user/calls/page.tsx</div><div class="name">Calls</div><div class="features">Call log, outcome/type/search filters, post-call form modal</div></div>
+  <div class="page-item"><div class="path">/user/calls/active/page.tsx</div><div class="name">Active Call (deep-link)</div><div class="features">Live call UI, talking points, objection handlers, live notes, post-call outcome. Future: connected to Emma AI</div></div>
+  <div class="page-item"><div class="path">/user/calendar/page.tsx</div><div class="name">Calendar</div><div class="features">Calendar view, new appointment modal, appointment detail modal</div></div>
+  <div class="page-item"><div class="path">/user/tasks/page.tsx</div><div class="name">Tasks</div><div class="features">Task manager with CRUD, status/priority filters, recurring tasks</div></div>
+  <div class="page-item"><div class="path">/user/briefing/page.tsx</div><div class="name">Briefings</div><div class="features">Morning briefing: pipeline funnel, hot leads, AI insights cards</div></div>
+  <div class="page-item"><div class="path">/user/automations/page.tsx</div><div class="name">Automations</div><div class="features">Workflow canvas (visual node editor), 5 tabs: builder/settings/enrollment/reports/activity</div></div>
+  <div class="page-item"><div class="path">/user/analytics/page.tsx</div><div name">Analytics</div><div class="features">Pipeline trends, lead source donut, channel mix, sequence performance table</div></div>
+  <div class="page-item"><div class="path">/user/team/page.tsx</div><div class="name">Team</div><div class="features">Team chat with channels/DMs tabs, NewChannelModal, message threads</div></div>
+  <div class="page-item"><div class="path">/user/ai/page.tsx</div><div class="name">AI Campaigns</div><div class="features">Emma AI campaign cards, active/paused toggles, queue stats</div></div>
+  <div class="page-item"><div class="path">/user/integrations/page.tsx</div><div class="name">Integrations</div><div class="features">Integration marketplace, connect/manage, request new integration</div></div>
+  <div class="page-item"><div class="path">/user/settings/page.tsx</div><div class="name">Settings</div><div class="features">Profile, integrations (Twilio/SendGrid/LoopMessages/Google Calendar), notifications, security</div></div>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(168,85,247,0.12);color:var(--purple)">◉</span>
+  Admin Dashboard — 8 pages
+  <span class="badge built"><span class="dot"></span> Built + Nav Wired</span>
+</div>
+
+<div class="grid-4 mb-24">
+  <div class="page-item"><div class="path">/admin/page.tsx</div><div class="name">Dashboard</div><div class="features">KPI cards, pipeline overview bars, recent leads table</div></div>
+  <div class="page-item"><div class="path">/admin/lead-pool/page.tsx</div><div class="name">Lead Pool</div><div class="features">Lead list with CSV import, bulk assign to agents, pagination</div></div>
+  <div class="page-item"><div class="path">/admin/performance/page.tsx</div><div class="name">Performance</div><div class="features">Agent leaderboard, detail slide-over</div></div>
+  <div class="page-item"><div class="path">/admin/team/page.tsx</div><div class="name">Team</div><div class="features">Member list, InviteMemberModal, member detail pane</div></div>
+  <div class="page-item" style="border-color:var(--accent);background:var(--accent-glow);">
+    <div class="path" style="color:var(--accent2);">/admin/workflows/page.tsx</div>
+    <div class="name">Workflows ★</div>
+    <div class="features">Workflow table + visual canvas editor. Added to sidebar nav (was missing)</div></div>
+  <div class="page-item"><div class="path">/admin/integrations/page.tsx</div><div class="name">Integrations</div><div class="features">Integration cards with configuration modal</div></div>
+  <div class="page-item"><div class="path">/admin/subscriptions/page.tsx</div><div class="name">Subscriptions</div><div class="features">Seat management, Stripe billing portal link</div></div>
+  <div class="page-item"><div class="path">/admin/settings/page.tsx</div><div class="name">Settings</div><div class="features">Workspace info, lead distribution, notification toggles</div></div>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(239,68,68,0.12);color:var(--red)">◉</span>
+  Superadmin Dashboard — 10 pages
+  <span class="badge built"><span class="dot"></span> Built + Nav Wired</span>
+</div>
+
+<div class="grid-4 mb-24">
+  <div class="page-item"><div class="path">/superadmin/page.tsx</div><div class="name">Overview</div><div class="features">KPIs, top workspaces, recent activity, quick actions</div></div>
+  <div class="page-item"><div class="path">/superadmin/users/page.tsx</div><div class="name">Users</div><div class="features">Cross-workspace users, AddUserModal, UserDetailPanel, pagination</div></div>
+  <div class="page-item"><div class="path">/superadmin/workspaces/page.tsx</div><div class="name">Workspaces</div><div class="features">All workspaces, AddWorkspaceModal, WorkspaceDetailPanel, pagination</div></div>
+  <div class="page-item"><div class="path">/superadmin/performance/page.tsx</div><div class="name">Performance</div><div class="features">Revenue trend, top agents, stage funnel</div></div>
+  <div class="page-item"><div class="path">/superadmin/subscriptions/page.tsx</div><div class="name">Subscriptions</div><div class="features">All subscriptions, plan editing, Stripe dashboard link</div></div>
+  <div class="page-item"><div class="path">/superadmin/health/page.tsx</div><div class="name">Health</div><div class="features">Service status, alert slide-over, request volume chart</div></div>
+  <div class="page-item"><div class="path">/superadmin/ai/page.tsx</div><div class="name">AI & LLM</div><div class="features">Provider management (LLM + Emma AI tabs), usage/cost/health stats</div></div>
+  <div class="page-item"><div class="path">/superadmin/integrations/page.tsx</div><div class="name">Integrations</div><div class="features">Platform integrations overview with config modal</div></div>
+  <div class="page-item" style="border-color:var(--orange);background:rgba(249,115,22,0.05);">
+    <div class="path" style="color:var(--orange);">/superadmin/sendillo/page.tsx</div>
+    <div class="name">Sendillo</div>
+    <div class="features">Phone numbers (purchased/registered), brands, number assignment to agents</div></div>
+  <div class="page-item"><div class="path">/superadmin/settings/page.tsx</div><div class="name">Settings</div><div class="features">Emma API key verification, platform config, Stripe payout (future)</div></div>
+  <div class="page-item"><div class="path">/superadmin/providers/page.tsx</div><div class="name">Providers</div><div class="features">SMS/messaging provider management (iMessage/SMS/RCS/WhatsApp tabs)</div></div>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(6,182,212,0.12);color:var(--cyan)">◉</span>
+  Auth & Public — 4 pages
+</div>
+
+<div class="grid-4 mb-12">
+  <div class="page-item"><div class="path">/page.tsx</div><div class="name">Root</div><div class="features">Server-side auth check, redirects to /sign-in or /select-workspace or /user</div></div>
+  <div class="page-item"><div class="path">/auth/sign-in/[[...sign-in]]/</div><div class="name">Sign In</div><div class="features">Clerk hosted sign-in</div></div>
+  <div class="page-item"><div class="path">/auth/sign-up/[[...sign-up]]/</div><div class="name">Sign Up</div><div class="features">Clerk hosted sign-up</div></div>
+  <div class="page-item"><div class="path">/auth/select-workspace/</div><div class="name">Select Workspace</div><div class="features">Multi-workspace selection, create workspace modal</div></div>
+</div>
+
+<div class="section-title mb-16 mt-24">
+  <span class="icon" style="background:rgba(234,179,8,0.12);color:var(--yellow)">◉</span>
+  Merged / Redirected Pages
+  <span class="badge merged"><span class="dot"></span> Redirected</span>
+</div>
+
+<div class="grid-4 mb-12">
+  <div class="page-item" style="border-color:var(--yellow);background:rgba(234,179,8,0.05);">
+    <div class="path" style="color:var(--yellow);">/user/leads/page.tsx →</div>
+    <div class="name" style="color:var(--yellow);">/user/pipeline</div>
+    <div class="features">Merged: enhanced list view in pipeline with stage grouping, lead type/source/score filters</div></div>
+  <div class="page-item" style="border-color:var(--yellow);background:rgba(234,179,8,0.05);">
+    <div class="path" style="color:var(--yellow);">/user/texts/page.tsx →</div>
+    <div class="name" style="color:var(--yellow);">/user/conversations</div>
+    <div class="features">Merged: conversations page is canonical. texts page redirects.</div></div>
+</div>
+
+<div class="section-title mb-16 mt-24">
+  <span class="icon" style="background:rgba(249,115,22,0.12);color:var(--orange)">◉</span>
+  Future Pages — Not Yet Built
+  <span class="badge pending"><span class="dot"></span> Pending</span>
+</div>
+
+<div class="grid-4">
+  <div class="page-item" style="border-color:var(--amber);background:rgba(234,179,8,0.05);">
+    <div class="path">/user/marketplace/page.tsx</div>
+    <div class="name" style="color:var(--amber);">Lead Marketplace 🔜</div>
+    <div class="features">RevRa Platform pool + Admin pool tabs, Stripe purchase, tier pricing</div></div>
+  <div class="page-item" style="border-color:var(--amber);background:rgba(234,179,8,0.05);">
+    <div class="path">/admin/marketplace/page.tsx</div>
+    <div class="name" style="color:var(--amber);">Admin Marketplace 🔜</div>
+    <div class="features">Admin pool management, bulk upload, pricing config, Stripe Connect</div></div>
+</div>
+
+</div><!-- /pages -->
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- VIEW: DATABASE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="view" id="view-database">
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(99,102,241,0.15);color:var(--accent2)">◈</span>
+  Database Schema — Complete Entity Map
+</div>
+
+<div class="card mb-16">
+  <h2>Source of Truth: supabase/schema.sql</h2>
+  <p class="subtitle">Single file — all 25 tables, enums, triggers, RPCs, RLS, seed data. Migrations reference it.</p>
+  <div class="tags mt-12">
+    <span class="tag green">25 tables</span>
+    <span class="tag green">15 enums</span>
+    <span class="tag">9 auto-updated_at triggers</span>
+    <span class="tag">1 pipeline_move tracker trigger</span>
+    <span class="tag orange">7 RPC counter functions</span>
+    <span class="tag purple">RLS on all 25 tables</span>
+  </div>
+</div>
+
+<div class="card mb-16">
+  <h3>15 Enums</h3>
+  <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:8px;">
+    <div class="tag">workspace_plan<br><span class="dimmer">starter|pro|ent</span></div>
+    <div class="tag">user_role<br><span class="dimmer">super|admin|agent</span></div>
+    <div class="tag">message_channel<br><span class="dimmer">sms|imsg|wa|rcs|email</span></div>
+    <div class="tag">message_direction<br><span class="dimmer">inbound|outbound</span></div>
+    <div class="tag">call_direction<br><span class="dimmer">inbound|outbound</span></div>
+    <div class="tag">call_status<br><span class="dimmer">initiated|ringing|in_progress|completed|busy|no_answer|failed</span></div>
+    <div class="tag">task_type<br><span class="dimmer">call|email|sms|follow_up|schedule|custom</span></div>
+    <div class="tag">task_priority<br><span class="dimmer">low|medium|high|urgent</span></div>
+    <div class="tag">task_status<br><span class="dimmer">pending|completed|skipped</span></div>
+    <div class="tag">ai_mode<br><span class="dimmer">agent|chat</span></div>
+    <div class="tag">ai_role<br><span class="dimmer">user|assistant|system|tool</span></div>
+    <div class="tag">integration_provider<br><span class="dimmer">twilio|loopmsg|sendgrid|google|meta|hubspot|sf|stripe|slack|zapier|calendly|aircall|intercom|sendillo</span></div>
+    <div class="tag">integration_status<br><span class="dimmer">active|error|disconnected</span></div>
+    <div class="tag">lead_type<br><span class="dimmer">medicare|aca|final_exp|life|other</span></div>
+    <div class="tag">ai_disposition<br><span class="dimmer">interested|not_int|callback|not_reach</span></div>
+  </div>
+</div>
+
+<div class="card mb-16">
+  <h3>Key Tables — Full Schema</h3>
+  <div class="flow-diagram">
+    <table class="schema-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Key</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td colspan="4" style="background:var(--bg4);font-weight:700;color:var(--cyan);padding:8px 12px;">workspaces</td></tr>
+        <tr><td class="col-name">id</td><td class="col-type">UUID PK</td><td class="col-key"></td><td class="col-note">uuid_generate_v4()</td></tr>
+        <tr><td class="col-name">name</td><td class="col-type">TEXT</td><td class="col-key"></td><td class="col-note">NOT NULL</td></tr>
+        <tr><td class="col-name">slug</td><td class="col-type">TEXT</td><td class="col-key">UNIQUE</td><td class="col-note">URL-safe identifier</td></tr>
+        <tr><td class="col-name">plan</td><td class="col-type">workspace_plan</td><td class="col-key"></td><td class="col-note">starter | professional | enterprise</td></tr>
+        <tr><td class="col-name">twilio_account_sid</td><td class="col-type">TEXT</td><td class="col-key"></td><td class="col-note">Voice (future)</td></tr>
+        <tr><td class="col-name">loopmessages_api_key</td><td class="col-type">TEXT</td><td class="col-key"></td><td class="col-note">Messaging (future)</td></tr>
+        <tr><td class="col-name">sendgrid_api_key</td><td class="col-type">TEXT</td><td class="col-key"></td><td class="col-note">Email (future)</td></tr>
+        <tr><td class="col-name">google_calendar_creds</td><td class="col-type">JSONB</td><td class="col-key"></td><td class="col-note">OAuth via Emma</td></tr>
+        <tr><td class="col-name">settings</td><td class="col-type">JSONB</td><td class="col-key"></td><td class="col-note">Default {}</td></tr>
+
+        <tr><td colspan="4" style="background:var(--bg4);font-weight:700;color:var(--cyan);padding:8px 12px;">users</td></tr>
+        <tr><td class="col-name">id</td><td class="col-type">UUID PK</td><td class="col-key"></td><td class="col-note"></td></tr>
+        <tr><td class="col-name">clerk_user_id</td><td class="col-type">TEXT</td><td class="col-key">UNIQUE</td><td class="col-note">Clerk auth identifier</td></tr>
+        <tr><td class="col-name">workspace_id</td><td class="col-type">UUID FK</td><td class="col-key">FK</td><td class="col-note">→ workspaces(id)</td></tr>
+        <tr><td class="col-name">role</td><td class="col-type">user_role</td><td class="col-key"></td><td class="col-note">Default 'agent'</td></tr>
+        <tr><td class="col-name">emma_client_id</td><td class="col-type">TEXT</td><td class="col-key"></td><td class="col-note">Phase 3 — future multi-client</td></tr>
+
+        <tr><td colspan="4" style="background:var(--bg4);font-weight:700;color:var(--cyan);padding:8px 12px;">leads</td></tr>
+        <tr><td class="col-name">assigned_agent_id</td><td class="col-type">UUID FK</td><td class="col-key">FK</td><td class="col-note">→ users(id)</td></tr>
+        <tr><td class="col-name">pipeline_stage</td><td class="col-type">TEXT</td><td class="col-key"></td><td class="col-note">Default 'new_lead'</td></tr>
+        <tr><td class="col-name">opted_out</td><td class="col-type">BOOLEAN</td><td class="col-key"></td><td class="col-note">Phase 4 — Sendillo opt-out</td></tr>
+        <tr><td class="col-name">opted_out_at</td><td class="col-type">TIMESTAMPTZ</td><td class="col-key"></td><td class="col-note">Phase 4</td></tr>
+        <tr><td class="col-name">is_admin_lead</td><td class="col-type">BOOLEAN</td><td class="col-key"></td><td class="col-note">Admin-created vs agent-created</td></tr>
+        <tr><td class="col-name">is_marketplace_lead</td><td class="col-type">BOOLEAN</td><td class="col-key"></td><td class="col-note">Lead Marketplace purchase</td></tr>
+        <tr><td class="col-name">enrichment_data</td><td class="col-type">JSONB</td><td class="col-key"></td><td class="col-note">emma_lead_id, etc.</td></tr>
+        <tr><td class="col-name">tags, previous_stages</td><td class="col-type">TEXT[]</td><td class="col-key"></td><td class="col-note">Default {}</td></tr>
+        <tr><td class="col-name">created_by</td><td class="col-type">UUID FK</td><td class="col-key">MISSING</td><td class="col-note" style="color:var(--orange);">→ users(id) NOT YET IN SCHEMA</td></tr>
+
+        <tr><td colspan="4" style="background:var(--bg4);font-weight:700;color:var(--cyan);padding:8px 12px;">campaigns (Phase 4)</td></tr>
+        <tr><td class="col-name">sender_phone_id</td><td class="col-type">UUID FK</td><td class="col-key">FK</td><td class="col-note">→ sendillo_phone_numbers(id)</td></tr>
+        <tr><td class="col-name">positive_keywords</td><td class="col-type">TEXT[]</td><td class="col-key"></td><td class="col-note">Route to Emma on match</td></tr>
+        <tr><td class="col-name">optout_keywords</td><td class="col-type">TEXT[]</td><td class="col-key"></td><td class="col-note">Default {STOP,UNSUBSCRIBE,CANCEL}</td></tr>
+        <tr><td class="col-name">sent, delivered, failed</td><td class="col-type">INTEGER</td><td class="col-key"></td><td class="col-note">Counter columns</td></tr>
+        <tr><td class="col-name">opted_out, emma_synced</td><td class="col-type">INTEGER</td><td class="col-key"></td><td class="col-note">Phase 4 counter columns</td></tr>
+        <tr><td class="col-name">created_by</td><td class="col-type">UUID FK</td><td class="col-key">FK</td><td class="col-note">→ users(id)</td></tr>
+
+        <tr><td colspan="4" style="background:var(--bg4);font-weight:700;color:var(--cyan);padding:8px 12px;">messages</td></tr>
+        <tr><td class="col-name">campaign_id</td><td class="col-type">UUID FK</td><td class="col-key">FK</td><td class="col-note">Phase 4 — link to campaigns</td></tr>
+        <tr><td class="col-name">channel</td><td class="col-type">message_channel</td><td class="col-key"></td><td class="col-note">sms|imessage|whatsapp|rcs|email</td></tr>
+        <tr><td class="col-name">ai_generated</td><td class="col-type">BOOLEAN</td><td class="col-key"></td><td class="col-note">Default FALSE</td></tr>
+        <tr><td class="col-name">ai_context</td><td class="col-type">JSONB</td><td class="col-key"></td><td class="col-note">AI context/suggestions</td></tr>
+        <tr><td class="col-name">is_read</td><td class="col-type">BOOLEAN</td><td class="col-key">MISSING</td><td class="col-note" style="color:var(--orange);">Read receipt tracking — not yet in schema</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="grid-2 mb-16">
+  <div class="card">
+    <h3>RLS Policy Model</h3>
+    <div class="text-sm dim mt-8">Role hierarchy: <span class="mono accent">superadmin</span> &gt; <span class="mono" style="color:var(--purple);">admin</span> &gt; <span class="mono" style="color:var(--green);">agent</span></div>
+    <div class="int-list mt-12">
+      <div class="int-item"><div class="name">leads</div><div class="meta"><span class="badge built" style="padding:2px 8px;">SELECT</span><span class="dimmer text-xs">all workspace members</span></div></div>
+      <div class="int-item"><div class="name">messages</div><div class="meta"><span class="badge built" style="padding:2px 8px;">SELECT/INSERT</span><span class="dimmer text-xs">all workspace members</span></div></div>
+      <div class="int-item"><div class="name">integrations</div><div class="meta"><span class="badge built" style="padding:2px 8px;">ALL</span><span class="dimmer text-xs">admins+ only</span></div></div>
+      <div class="int-item"><div class="name">sendillo_phone_numbers</div><div class="meta"><span class="badge built" style="padding:2px 8px;">SELECT</span><span class="dimmer text-xs">all / INSERT by superadmin</span></div></div>
+      <div class="int-item"><div class="name">ai_providers</div><div class="meta"><span class="badge built" style="padding:2px 8px;">ALL</span><span class="dimmer text-xs">superadmins only</span></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>7 RPC Counter Functions</h3>
+    <div class="text-sm dim mb-12 mt-8">Phase 4 — Atomic increments for campaign stats</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <div class="tag green">increment_campaign_sent()</div>
+      <div class="tag green">increment_campaign_delivered()</div>
+      <div class="tag orange">increment_campaign_failed()</div>
+      <div class="tag green">increment_campaign_replied()</div>
+      <div class="tag orange">increment_campaign_optout()</div>
+      <div class="tag purple">increment_campaign_emma_synced()</div>
+      <div class="tag" style="grid-column:span 2;">increment_conversation_unread()</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Migration Files</h3>
+  <div class="int-list mt-12">
+    <div class="int-item"><div class="name mono text-sm">supabase/schema.sql</div><div class="meta"><span class="badge built" style="padding:2px 8px;">source of truth</span><span class="dimmer text-xs">Full schema — single query replication</span></div></div>
+    <div class="int-item"><div class="name mono text-sm">supabase/migration.sql</div><div class="meta"><span class="badge onhold" style="padding:2px 8px;">v2</span><span class="dimmer text-xs">Initial schema (pre-Phase 3)</span></div></div>
+    <div class="int-item"><div class="name mono text-sm">supabase/migrations/003_emma_ai_schema.sql</div><div class="meta"><span class="badge built" style="padding:2px 8px;">Phase 3</span><span class="dimmer text-xs">emma_client_id + unread_count</span></div></div>
+    <div class="int-item"><div class="name mono text-sm">supabase/migrations/004_sendillo_schema_enum.sql</div><div class="meta"><span class="badge built" style="padding:2px 8px;">Phase 4a</span><span class="dimmer text-xs">ALTER TYPE ADD VALUE 'sendillo' (own transaction)</span></div></div>
+    <div class="int-item"><div class="name mono text-sm">supabase/migrations/004_sendillo_schema.sql</div><div class="meta"><span class="badge built" style="padding:2px 8px;">Phase 4</span><span class="dimmer text-xs">sendillo_phone_numbers + campaign columns + RPCs</span></div></div>
+  </div>
+</div>
+
+</div><!-- /database -->
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- VIEW: INTEGRATIONS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="view" id="view-integrations">
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(34,197,94,0.12);color:var(--green)">◈</span>
+  Integration Status Matrix
+</div>
+
+<div class="card mb-16">
+  <table class="schema-table">
+    <thead><tr><th>Integration</th><th>Provider</th><th>Status</th><th>Lib File</th><th>Env Var</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Authentication</td><td class="col-type">Clerk</td><td><span class="badge built"><span class="dot"></span>Built</span></td><td class="col-note">webhook only</td><td class="col-note">CLERK_WEBHOOK_SECRET</td><td class="col-note">User sync to Supabase</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Database</td><td class="col-type">Supabase</td><td><span class="badge built"><span class="dot"></span>Built</span></td><td class="col-note">lib/supabase/</td><td class="col-note">SUPABASE_*</td><td class="col-note">PostgreSQL + RLS + Auth</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Emma AI — Core</td><td class="col-type">Lunar Olivia</td><td><span class="badge built"><span class="dot"></span>Built</span></td><td class="col-note">lib/emma/client.ts</td><td class="col-note">EMMA_API_KEY (Railway)</td><td class="col-note">Platform-level env var. NOT in DB.</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Emma — Leads Push</td><td class="col-type">Emma</td><td><span class="badge built"><span class="dot"></span>Built</span></td><td class="col-note">via emma/client</td><td class="col-note">EMMA_API_KEY</td><td class="col-note">Fire-and-forget on lead create/update</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Emma — Messaging OAuth</td><td class="col-type">Emma→Zernio</td><td><span class="badge built"><span class="dot"></span>Built</span></td><td class="col-note">api/emma/messaging/connect-link</td><td class="col-note">EMMA_API_KEY</td><td class="col-note">IG, WhatsApp, FB, Telegram</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Emma — Calendar OAuth</td><td class="col-type">Emma→Google</td><td><span class="badge built"><span class="dot"></span>Built</span></td><td class="col-note">api/emma/calendar/connect-link</td><td class="col-note">EMMA_API_KEY</td><td class="col-note">Google Calendar sync</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Emma — Campaigns</td><td class="col-type">Emma</td><td><span class="badge built"><span class="dot"></span>Built</span></td><td class="col-note">api/emma-campaigns/</td><td class="col-note">EMMA_API_KEY</td><td class="col-note">AI outbound campaigns + queue</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Emma — Webhooks</td><td class="col-type">Emma</td><td><span class="badge onhold"><span class="dot"></span>On Hold</span></td><td class="col-note">api/webhooks/emma/</td><td class="col-note">—</td><td class="col-note">Emma team building payload+auth</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Sendillo — Bulk SMS</td><td class="col-type">Sendillo</td><td><span class="badge built"><span class="dot"></span>Built</span></td><td class="col-note">lib/sendillo/client.ts</td><td class="col-note">SENDILLO_API_KEY</td><td class="col-note">Base: sendillo.com</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Sendillo — Webhooks</td><td class="col-type">Sendillo</td><td><span class="badge built"><span class="dot"></span>Built</span></td><td class="col-note">api/webhooks/sendillo/</td><td class="col-note">SENDILLO_WEBHOOK_SECRET</td><td class="col-note">4 events: inbound, delivered, sent, failed</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Sendillo — Numbers Mgmt</td><td class="col-type">Sendillo</td><td><span class="badge built"><span class="dot"></span>Built</span></td><td class="col-note">api/sendillo/numbers/</td><td class="col-note">SENDILLO_API_KEY</td><td class="col-note">Register, update, delete phone numbers</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">RevRa AI Chat Agent</td><td class="col-type">Future (Emma/OpenAI)</td><td><span class="badge pending"><span class="dot"></span>Pending</span></td><td class="col-note">lib/ai/tools.ts (scaffold)</td><td class="col-note">—</td><td class="col-note">UI done, no backend. 13 LLM tools defined. Future: connect to Emma AI for lead ops, messaging, tasks, calls, calendar.</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Twilio Voice</td><td class="col-type">Twilio (via Emma)</td><td><span class="badge onhold"><span class="dot"></span>Via Emma</span></td><td class="col-note">—</td><td class="col-note">—</td><td class="col-note">Emma handles Twilio integration</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Auto-Dialer</td><td class="col-type">—</td><td><span class="badge pending"><span class="dot"></span>Pending</span></td><td class="col-note">—</td><td class="col-note">—</td><td class="col-note">Not started — needs Twilio via Emma</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">iMessage</td><td class="col-type">Apple (via Emma)</td><td><span class="badge onhold"><span class="dot"></span>Emma Pending</span></td><td class="col-note">—</td><td class="col-note">—</td><td class="col-note">Emma team building</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">SMS Fallback</td><td class="col-type">Sendillo (via Emma)</td><td><span class="badge onhold"><span class="dot"></span>Emma Pending</span></td><td class="col-note">—</td><td class="col-note">—</td><td class="col-note">Emma team building</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">RCS</td><td class="col-type">—</td><td><span class="badge onhold"><span class="dot"></span>Emma Pending</span></td><td class="col-note">—</td><td class="col-note">—</td><td class="col-note">Emma team building</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Email</td><td class="col-type">SendGrid/Resend</td><td><span class="badge pending"><span class="dot"></span>Pending</span></td><td class="col-note">—</td><td class="col-note">SENDGRID_API_KEY</td><td class="col-note">Not started — sendgrid_api_key field exists in workspaces</td></tr>
+      <tr><td class="col-name" style="color:var(--text);font-weight:600;">Stripe Payments</td><td class="col-type">Stripe</td><td><span class="badge pending"><span class="dot"></span>Pending</span></td><td class="col-note">lib/stripe/ (future)</td><td class="col-note">STRIPE_*</td><td class="col-note">Lead Marketplace + subscriptions</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(168,85,247,0.12);color:var(--purple)">◈</span>
+  Emma AI — Channel Architecture
+</div>
+
+<div class="flow-diagram mb-24">
+  <div class="flow-row">
+    <div class="flow-node emma" style="min-width:160px"><div class="fn-label">Emma AI</div><div class="fn-sub">lunarolivia.com/api/v1/external</div></div>
+  </div>
+  <div class="flow-row" style="margin-top:-8px;">
+    <div style="min-width:80px"></div>
+    <span class="flow-arrow">├─</span>
+    <div class="flow-node channels" style="min-width:160px"><div class="fn-label">WhatsApp</div><div class="fn-sub">Zernio OAuth ✅</div></div>
+    <span class="flow-arrow">├─</span>
+    <div class="flow-node channels" style="min-width:160px"><div class="fn-label">Instagram</div><div class="fn-sub">Zernio OAuth ✅</div></div>
+    <span class="flow-arrow">├─</span>
+    <div class="flow-node channels" style="min-width:160px"><div class="fn-label">FB Messenger</div><div class="fn-sub">Zernio OAuth ✅</div></div>
+    <span class="flow-arrow">└─</span>
+    <div class="flow-node channels" style="min-width:160px"><div class="fn-label">Telegram</div><div class="fn-sub">Zernio OAuth ✅</div></div>
+  </div>
+  <div class="flow-row" style="margin-top:-8px;">
+    <div style="min-width:80px"></div>
+    <span class="flow-arrow">├─</span>
+    <div class="flow-node channels" style="min-width:160px"><div class="fn-label">Voice / Calls</div><div class="fn-sub">Twilio + Retell (Emma) 🔜</div></div>
+    <span class="flow-arrow">├─</span>
+    <div class="flow-node channels" style="min-width:160px"><div class="fn-label">Google Calendar</div><div class="fn-sub">OAuth via Emma ✅</div></div>
+    <span class="flow-arrow">├─</span>
+    <div class="flow-node channels" style="min-width:160px"><div class="fn-label">iMessage</div><div class="fn-sub">Emma building 🔜</div></div>
+    <span class="flow-arrow">└─</span>
+    <div class="flow-node channels" style="min-width:160px"><div class="fn-label">Inbound Webhooks</div><div class="fn-sub">Emma building 🔜</div></div>
+  </div>
+</div>
+
+<div class="grid-2 mb-24">
+  <div class="card">
+    <h3>Emma API Client Methods</h3>
+    <div class="text-sm dim mb-12 mt-8">lib/emma/client.ts — x-api-key auth, reads EMMA_API_KEY env var</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div class="tag">listClients() — GET /clients</div>
+      <div class="tag">createClient() — POST /clients</div>
+      <div class="tag">getClient(id) — GET /clients/:id</div>
+      <div class="tag highlight">createLead() — POST /leads (lead push)</div>
+      <div class="tag highlight">updateLead() — PATCH /leads/:id (stage sync)</div>
+      <div class="tag">getLead() — GET /leads/:id</div>
+      <div class="tag">listLeads() — GET /leads</div>
+      <div class="tag highlight">mintMessagingConnectLink() — POST /integrations/messaging/connect-link</div>
+      <div class="tag highlight">mintCalendarConnectLink() — POST /calendar/connect-link</div>
+      <div class="tag">createPhoneNumber() — POST /phone-numbers</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Sendillo API Client Methods</h3>
+    <div class="text-sm dim mb-12 mt-8">lib/sendillo/client.ts — x-api-key auth</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div class="tag orange">sendSMS() — POST /api/v1/messages (single)</div>
+      <div class="tag orange">sendBulkSMS() — POST /api/v1/messages/bulk</div>
+      <div class="tag orange">sendMMS() — POST /api/v1/messages/mms</div>
+      <div class="tag orange">listPurchasedNumbers() — GET /api/v1/numbers/purchased</div>
+      <div class="tag orange">listBrands() — GET /api/v1/brands</div>
+      <div class="tag orange">listSendilloCampaigns() — GET /api/v1/campaigns</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(6,182,212,0.12);color:var(--cyan)">◈</span>
+  API Routes — Complete Map (54 routes)
+</div>
+
+<div class="grid-3">
+  <div class="card" style="padding:16px;"><h3 style="color:var(--cyan);margin-bottom:12px;">Core (6 routes)</h3>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">
+      <div>GET/POST /api/leads</div>
+      <div>PATCH /api/leads</div>
+      <div>GET /api/leads/[id]/messages</div>
+      <div>GET/POST /api/calls, GET /api/calls/[id]</div>
+      <div>GET/POST /api/tasks</div>
+      <div>GET/POST /api/appointments</div>
+    </div>
+  </div>
+  <div class="card" style="padding:16px;"><h3 style="color:var(--orange);margin-bottom:12px;">Campaigns (7 routes)</h3>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">
+      <div>GET/POST /api/campaigns</div>
+      <div>GET /api/campaigns/stats</div>
+      <div>GET/PATCH/DELETE /api/campaigns/[id]</div>
+      <div>POST /api/campaigns/[id]/send ✅</div>
+      <div>GET /api/campaigns/[id]/stats</div>
+      <div>GET/POST /api/emma-campaigns</div>
+      <div>GET/PATCH /api/emma-campaigns/[id]</div>
+      <div>GET/POST /api/emma-queue</div>
+    </div>
+  </div>
+  <div class="card" style="padding:16px;"><h3 style="color:var(--purple);margin-bottom:12px;">Emma (8 routes)</h3>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">
+      <div>GET /api/emma/setup (env var only)</div>
+      <div>POST /api/emma/setup (verify key only)</div>
+      <div>GET/POST /api/emma/clients</div>
+      <div>POST /api/emma/leads ✅</div>
+      <div>POST /api/emma/leads/bulk ✅</div>
+      <div>PATCH /api/emma/leads/[id] ✅</div>
+      <div>POST /api/emma/messaging/connect-link ✅</div>
+      <div>POST /api/emma/calendar/connect-link ✅</div>
+      <div>GET /api/emma/clients/[id]</div>
+    </div>
+  </div>
+  <div class="card" style="padding:16px;"><h3 style="color:var(--amber);margin-bottom:12px;">Sendillo (4 routes)</h3>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">
+      <div>GET/POST /api/sendillo/numbers</div>
+      <div>GET/PATCH/DELETE /api/sendillo/numbers/[id]</div>
+      <div>GET /api/sendillo/brands</div>
+    </div>
+  </div>
+  <div class="card" style="padding:16px;"><h3 style="color:var(--green);margin-bottom:12px;">Webhooks (2 routes)</h3>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">
+      <div>POST /api/webhooks/clerk ✅</div>
+      <div>POST /api/webhooks/sendillo ✅</div>
+      <div>POST /api/webhooks/emma 🔜 MISSING</div>
+    </div>
+  </div>
+  <div class="card" style="padding:16px;"><h3 style="color:var(--pink);margin-bottom:12px;">Admin (6 routes)</h3>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">
+      <div>GET /api/admin/dashboard</div>
+      <div>GET/POST /api/admin/lead-pool</div>
+      <div>PATCH /api/admin/lead-pool/assign</div>
+      <div>GET/POST /api/admin/team</div>
+      <div>PATCH /api/admin/team/[id]</div>
+      <div>GET/PATCH /api/admin/subscriptions</div>
+      <div>GET/POST/PATCH /api/admin/workflows</div>
+      <div>GET /api/admin/performance</div>
+    </div>
+  </div>
+  <div class="card" style="padding:16px;"><h3 style="color:var(--cyan);margin-bottom:12px;">Superadmin (8 routes)</h3>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">
+      <div>GET /api/superadmin/overview</div>
+      <div>GET/POST/PATCH/DELETE /api/superadmin/users</div>
+      <div>GET/POST/PATCH/DELETE /api/superadmin/workspaces</div>
+      <div>GET /api/superadmin/performance</div>
+      <div>GET/PATCH /api/superadmin/subscriptions</div>
+      <div>GET /api/superadmin/health</div>
+      <div>GET/PATCH /api/superadmin/ai-providers</div>
+      <div>GET/PATCH /api/superadmin/providers</div>
+    </div>
+  </div>
+  <div class="card" style="padding:16px;"><h3 style="color:var(--text-dimmer);margin-bottom:12px;">Other (12 routes)</h3>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">
+      <div>GET /api/home ✅</div>
+      <div>GET /api/briefing ✅</div>
+      <div>GET/POST/PATCH/DELETE /api/team</div>
+      <div>GET /api/channels, GET /api/channels/[id]/messages</div>
+      <div>GET /api/conversations, GET /api/conversations/[id]/messages</div>
+      <div>GET/POST /api/messages</div>
+      <div>GET /api/analytics ✅</div>
+      <div>GET/POST /api/workflows ✅</div>
+      <div>GET /api/integrations ✅</div>
+      <div>GET /api/workspaces, GET /api/workspaces/my</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /integrations -->
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- VIEW: DATA FLOWS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="view" id="view-flows">
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(99,102,241,0.15);color:var(--accent2)">◈</span>
+  Lead Lifecycle — Full Data Flow
+</div>
+
+<div class="flow-diagram mb-24">
+  <div class="flow-row">
+    <div class="flow-node nextjs" style="min-width:200px"><div class="fn-label">Lead Created</div><div class="fn-sub">POST /api/leads</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node supabase" style="min-width:140px"><div class="fn-label">INSERT lead</div><div class="fn-sub">Supabase</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node emma" style="min-width:160px"><div class="fn-label">Emma Push</div><div class="fn-sub">createLead() fire-and-forget</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node supabase" style="min-width:160px"><div class="fn-label">Store emma_lead_id</div><div class="fn-sub">leads.enrichment_data</div></div>
+  </div>
+  <div class="flow-row">
+    <div style="min-width:200px"></div>
+    <span class="flow-arrow">↓</span>
+    <div class="flow-node nextjs" style="min-width:140px"><div class="fn-label">Stage Change</div><div class="fn-sub">PATCH /api/leads</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node supabase" style="min-width:140px"><div class="fn-label">pipeline_moves INSERT</div><div class="fn-sub">(trigger fires)</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node emma" style="min-width:160px"><div class="fn-label">Emma Sync</div><div class="fn-sub">updateLead() fire-and-forget</div></div>
+  </div>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(249,115,22,0.12);color:var(--orange)">◈</span>
+  Campaign Send Flow — Sendillo
+</div>
+
+<div class="flow-diagram mb-24">
+  <div class="flow-row">
+    <div class="flow-node nextjs" style="min-width:200px"><div class="fn-label">5-Step Wizard</div><div class="fn-sub">POST /api/campaigns</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node supabase" style="min-width:160px"><div class="fn-label">INSERT campaign</div><div class="fn-sub">status: draft</div></div>
+  </div>
+  <div class="flow-row">
+    <div style="min-width:200px"></div>
+    <span class="flow-arrow">↓</span>
+    <div class="flow-node nextjs" style="min-width:200px"><div class="fn-label">Launch Campaign</div><div class="fn-sub">POST /api/campaigns/[id]/send</div></div>
+  </div>
+  <div class="flow-row">
+    <div style="min-width:200px"></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node nextjs" style="min-width:160px"><div class="fn-label">Fetch leads</div><div class="fn-sub">opted_out=false, phone!=null</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node sendillo" style="min-width:160px"><div class="fn-label">sendBulkSMS()</div><div class="fn-sub">Sendillo API</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node supabase" style="min-width:160px"><div class="fn-label">INSERT messages</div><div class="fn-sub">id = clientRef UUID</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node supabase" style="min-width:140px"><div class="fn-label">UPDATE campaign</div><div class="fn-sub">status=active, sent=N</div></div>
+  </div>
+  <div class="flow-row">
+    <div style="min-width:200px"></div>
+    <span class="flow-arrow">↕</span>
+    <div class="flow-node sendillo" style="min-width:140px"><div class="fn-label">Webhooks fire</div><div class="fn-sub">delivered/sent/failed</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node nextjs" style="min-width:180px"><div class="fn-label">POST /api/webhooks/sendillo</div><div class="fn-sub">Route: inbound/delivered/sent/failed</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node supabase" style="min-width:140px"><div class="fn-label">UPDATE message</div><div class="fn-sub">external_status</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node emma" style="min-width:120px"><div class="fn-label">On positive keyword</div><div class="fn-sub">pushLeadToEmma()</div></div>
+  </div>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(234,179,8,0.12);color:var(--yellow)">◈</span>
+  Auth Flow — Clerk → Supabase
+</div>
+
+<div class="flow-diagram mb-24">
+  <div class="flow-row">
+    <div class="flow-node clerk" style="min-width:160px"><div class="fn-label">Clerk</div><div class="fn-sub">letsrevra.com</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node nextjs" style="min-width:200px"><div class="fn-label">POST /api/webhooks/clerk</div><div class="fn-sub">svix signature verified</div></div>
+  </div>
+  <div class="flow-row">
+    <div style="min-width:180px"></div>
+    <span class="flow-arrow">↓</span>
+    <div class="flow-node nextjs" style="min-width:180px"><div class="fn-label">user.created → upsert</div><div class="fn-sub">user.updated → update</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node nextjs" style="min-width:180px"><div class="fn-label">user.deleted → delete</div><div class="fn-sub">Supabase.users</div></div>
+  </div>
+  <div class="flow-row">
+    <div style="min-width:180px"></div>
+    <span class="flow-arrow">↓</span>
+    <div class="flow-node supabase" style="min-width:200px"><div class="fn-label">RLS: auth.uid()::text = clerk_user_id</div><div class="fn-sub">workspace_id from users table</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node nextjs" style="min-width:200px"><div class="fn-label">API routes: auth() → createServiceSupabaseClient()</div><div class="fn-sub">All CRUD operations</div></div>
+  </div>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(236,72,153,0.12);color:var(--pink)">◈</span>
+  RevRa AI Agent Flow (Future)
+</div>
+
+<div class="flow-diagram mb-16">
+  <div class="flow-row">
+    <div class="flow-node nextjs" style="min-width:200px"><div class="fn-label">RevRa AI Chat</div><div class="fn-sub">Floating UI on all user pages</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node nextjs" style="min-width:160px"><div class="fn-label">POST /api/ai/chat</div><div class="fn-sub">LLM with function calling</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node emma" style="min-width:160px"><div class="fn-label">Emma AI / OpenAI</div><div class="fn-sub">Tool execution decision</div></div>
+  </div>
+  <div class="flow-row">
+    <div style="min-width:200px"></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node nextjs" style="min-width:160px"><div class="fn-label">Tool Execution</div><div class="fn-sub">13 tools in lib/ai/tools.ts</div></div>
+    <span class="flow-arrow">├─</span>
+    <div class="flow-node supabase" style="min-width:120px"><div class="fn-label">get_lead</div><div class="fn-sub">→ /api/leads/[id]</div></div>
+    <span class="flow-arrow">├─</span>
+    <div class="flow-node supabase" style="min-width:140px"><div class="fn-label">update_lead_score</div><div class="fn-sub">→ /api/leads PATCH</div></div>
+    <span class="flow-arrow">├─</span>
+    <div class="flow-node sendillo" style="min-width:100px"><div class="fn-label">send_message</div><div class="fn-sub">→ sendSMS()</div></div>
+    <span class="flow-arrow">└─</span>
+    <div class="flow-node supabase" style="min-width:100px"><div class="fn-label">create_task</div><div class="fn-sub">→ /api/tasks</div></div>
+  </div>
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(234,179,8,0.12);color:var(--yellow)">◈</span>
+  Lead Marketplace Flow (Future) — Stripe Connect
+</div>
+
+<div class="flow-diagram mb-16">
+  <div class="flow-row">
+    <div class="flow-node supabase" style="min-width:180px"><div class="fn-label">RevRa Platform Pool</div><div class="fn-sub">Superadmin bulk upload</div></div>
+    <span class="flow-arrow">+</span>
+    <div class="flow-node supabase" style="min-width:180px"><div class="fn-label">Admin Pool</div><div class="fn-sub">Admin bulk upload + pricing</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node nextjs" style="min-width:160px"><div class="fn-label">/user/marketplace</div><div class="fn-sub">Browse + purchase leads</div></div>
+  </div>
+  <div class="flow-row">
+    <div style="min-width:180px"></div>
+    <span class="flow-arrow">↓</span>
+    <div class="flow-node stripe" style="min-width:160px"><div class="fn-label">Stripe Checkout</div><div class="fn-sub">Per-lead or subscription</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node nextjs" style="min-width:180px"><div class="fn-label">Stripe webhook</div><div class="fn-sub">payment_intent.succeeded</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node supabase" style="min-width:160px"><div class="fn-label">Assign lead</div><div class="fn-sub">is_marketplace_lead=true</div></div>
+  </div>
+  <div class="flow-row">
+    <div style="min-width:180px"></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node stripe" style="min-width:200px"><div class="fn-label">Stripe Connect Payout</div><div class="fn-sub">2% RevRa platform cut</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node supabase" style="min-width:160px"><div class="fn-label">Remove from marketplace</div><div class="fn-sub">First-come-first-served</div></div>
+  </div>
+</div>
+
+</div><!-- /flows -->
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- VIEW: ROADMAP -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="view" id="view-roadmap">
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(34,197,94,0.12);color:var(--green)">◈</span>
+  Implementation Roadmap
+</div>
+
+<div class="roadmap mb-24">
+
+  <div class="phase done">
+    <div class="phase-header"><div class="phase-num">1</div><div class="phase-name">Phase 1-2: Core CRM</div><div class="phase-date">Earlier sessions</div></div>
+    <div class="phase-body">
+      <div class="phase-item"><div class="check">✓</div> Leads CRUD with pipeline stages</div>
+      <div class="phase-item"><div class="check">✓</div> Kanban pipeline board</div>
+      <div class="phase-item"><div class="check">✓</div> Tasks management</div>
+      <div class="phase-item"><div class="check">✓</div> Calls + AI transcription</div>
+      <div class="phase-item"><div class="check">✓</div> Team channels + messaging</div>
+      <div class="phase-item"><div class="check">✓</div> Calendar events + Appointments</div>
+      <div class="phase-item"><div class="check">✓</div> User/Admin/Superadmin dashboards</div>
+    </div>
+  </div>
+
+  <div class="phase done">
+    <div class="phase-header"><div class="phase-num">2</div><div class="phase-name">Phase 3: Emma AI Integration</div><div class="phase-date">Completed</div></div>
+    <div class="phase-body">
+      <div class="phase-item"><div class="check">✓</div> lib/emma/client.ts — Emma API client (platform-level env var)</div>
+      <div class="phase-item"><div class="check">✓</div> Emma leads push on create (fire-and-forget)</div>
+      <div class="phase-item"><div class="check">✓</div> Emma stage sync on pipeline change</div>
+      <div class="phase-item"><div class="check">✓</div> Emma messaging connect links (IG, WhatsApp, FB, Telegram)</div>
+      <div class="phase-item"><div class="check">✓</div> Emma calendar connect link (Google OAuth)</div>
+      <div class="phase-item"><div class="check">✓</div> Emma campaigns + queue management</div>
+      <div class="phase-item"><div class="check">✓</div> Emma setup endpoint (verifies key only, no DB storage)</div>
+    </div>
+  </div>
+
+  <div class="phase done">
+    <div class="phase-header"><div class="phase-num">3</div><div class="phase-name">Phase 3B: Sendillo Integration</div><div class="phase-date">Completed</div></div>
+    <div class="phase-body">
+      <div class="phase-item"><div class="check">✓</div> lib/sendillo/client.ts — Bulk SMS client</div>
+      <div class="phase-item"><div class="check">✓</div> sendillo_phone_numbers table + RLS</div>
+      <div class="phase-item"><div class="check">✓</div> Campaign 5-step wizard (User Dashboard)</div>
+      <div class="phase-item"><div class="check">✓</div> Bulk SMS send via sendBulkSMS()</div>
+      <div class="phase-item"><div class="check">✓</div> Sendillo webhook handler (4 events)</div>
+      <div class="phase-item"><div class="check">✓</div> Keyword routing → Emma push + opt-out</div>
+      <div class="phase-item"><div class="check">✓</div> Superadmin Sendillo dashboard</div>
+      <div class="phase-item"><div class="check">✓</div> Campaign stats + aggregate stats</div>
+    </div>
+  </div>
+
+  <div class="phase current">
+    <div class="phase-header"><div class="phase-num">4</div><div class="phase-name">Lead Marketplace</div><div class="phase-date">Next</div></div>
+    <div class="phase-body">
+      <div class="phase-item"><div class="check">○</div> /user/marketplace page (RevRa Platform + Admin pool tabs)</div>
+      <div class="phase-item"><div class="check">○</div> Lead tier system (Premium / Normal / Aged)</div>
+      <div class="phase-item"><div class="check">○</div> Admin pool bulk upload CSV wizard</div>
+      <div class="phase-item"><div class="check">○</div> Superadmin RevRa Platform pool management</div>
+      <div class="phase-item"><div class="check">○</div> Stripe Connect integration (2% RevRa cut)</div>
+      <div class="phase-item"><div class="check">○</div> Lead purchase flow (Stripe Checkout)</div>
+      <div class="phase-item"><div class="check">○</div> First-come-first-served dedup</div>
+      <div class="phase-item"><div class="check">○</div> Subscription plans (prepaid agent credits)</div>
+    </div>
+  </div>
+
+  <div class="phase future">
+    <div class="phase-header"><div class="phase-num">5</div><div class="phase-name">RevRa AI Agent — Chat + Tools</div><div class="phase-date">Future</div></div>
+    <div class="phase-body">
+      <div class="phase-item"><div class="check">○</div> /api/ai/chat route (LLM backend for RevRaAIChat)</div>
+      <div class="phase-item"><div class="check">○</div> Wire all 13 tools from lib/ai/tools.ts to real endpoints</div>
+      <div class="phase-item"><div class="check">○</div> Lead operations (get/update/score/assign)</div>
+      <div class="phase-item"><div class="check">○</div> Messaging (send SMS, send_message via Sendillo)</div>
+      <div class="phase-item"><div class="check">○</div> Tasks (create/complete/get tasks)</div>
+      <div class="phase-item"><div class="check">○</div> Calls (place_call via Emma/Twilio)</div>
+      <div class="phase-item"><div class="check">○</div> Calendar (schedule_event via Emma/Google)</div>
+      <div class="phase-item"><div class="check">○</div> AI summarize call + performance report</div>
+    </div>
+  </div>
+
+  <div class="phase future">
+    <div class="phase-header"><div class="phase-num">6</div><div class="phase-name">Emma AI — Pending Deliverables</div><div class="phase-date">Awaiting Emma team</div></div>
+    <div class="phase-body">
+      <div class="phase-item"><div class="check">○</div> Emma inbound message webhooks (payload + auth)</div>
+      <div class="phase-item"><div class="check">○</div> AI draft / message suggestion endpoint</div>
+      <div class="phase-item"><div class="check">○</div> Call recording fetch + transcription + summary</div>
+      <div class="phase-item"><div class="check">○</div> iMessage channel support</div>
+      <div class="phase-item"><div class="check">○</div> SMS Fallback channel support</div>
+      <div class="phase-item"><div class="check">○</div> RCS channel support</div>
+      <div class="phase-item"><div class="check">○</div> Auto-dialer (Twilio via Emma)</div>
+    </div>
+  </div>
+
+  <div class="phase future">
+    <div class="phase-header"><div class="phase-num">7</div><div class="phase-name">Other Integrations</div><div class="phase-date">Future</div></div>
+    <div class="phase-body">
+      <div class="phase-item"><div class="check">○</div> Email provider (SendGrid or Resend)</div>
+      <div class="phase-item"><div class="check">○</div> Workflow automation engine (node graph executor)</div>
+      <div class="phase-item"><div class="check">○</div> Advanced analytics + reporting</div>
+      <div class="phase-item"><div class="check">○</div> Post-call form auto-fill from AI summary</div>
+      <div class="phase-item"><div class="check">○</div> Active call routing (Twilio webhook for inbound calls)</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(6,182,212,0.12);color:var(--cyan)">◈</span>
+  Deployment Checklist
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h3>Environment Variables — Railway</h3>
+    <div class="int-list mt-12">
+      <div class="int-item"><div class="name mono text-sm">NEXT_PUBLIC_SUPABASE_URL</div><div class="meta"><span class="badge built" style="padding:2px 8px;">✓ Set</span></div></div>
+      <div class="int-item"><div class="name mono text-sm">NEXT_PUBLIC_SUPABASE_ANON_KEY</div><div class="meta"><span class="badge built" style="padding:2px 8px;">✓ Set</span></div></div>
+      <div class="int-item"><div class="name mono text-sm">SUPABASE_SERVICE_ROLE_KEY</div><div class="meta"><span class="badge built" style="padding:2px 8px;">✓ Set</span></div></div>
+      <div class="int-item"><div class="name mono text-sm">CLERK_PUBLISHABLE_KEY + SECRET_KEY + WEBHOOK_SECRET</div><div class="meta"><span class="badge built" style="padding:2px 8px;">✓ Set</span></div></div>
+      <div class="int-item"><div class="name mono text-sm">EMMA_API_KEY</div><div class="meta"><span class="badge pending" style="padding:2px 8px;">Set in Railway</span><span class="dimmer text-xs">Platform-level env var</span></div></div>
+      <div class="int-item"><div class="name mono text-sm">SENDILLO_API_KEY</div><div class="meta"><span class="badge pending" style="padding:2px 8px;">Set in Railway</span><span class="dimmer text-xs">Ask Sendillo for key</span></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Webhook URLs — Configure in Provider Dashboards</h3>
+    <div class="int-list mt-12">
+      <div class="int-item"><div class="name mono text-sm">https://app.letsrevra.com/api/webhooks/sendillo</div><div class="meta"><span class="badge built" style="padding:2px 8px;">Ready</span><span class="dimmer text-xs">Sendillo dashboard</span></div></div>
+      <div class="int-item"><div class="name mono text-sm">https://app.letsrevra.com/api/webhooks/clerk</div><div class="meta"><span class="badge built" style="padding:2px 8px;">Ready</span><span class="dimmer text-xs">Clerk dashboard → webhooks</span></div></div>
+      <div class="int-item"><div class="name mono text-sm">https://app.letsrevra.com/api/webhooks/emma</div><div class="meta"><span class="badge onhold" style="padding:2px 8px;">Wait</span><span class="dimmer text-xs">Emma pending delivery</span></div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /roadmap -->
+
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- VIEW: GAPS & ACTION ITEMS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="view" id="view-gaps">
+
+<div class="section-title mb-16">
+  <span class="icon" style="background:rgba(239,68,68,0.12);color:var(--red)">◈</span>
+  Architecture Gaps & Action Items
+</div>
+
+<!-- Critical -->
+<div class="section-title mb-12" style="font-size:14px;">
+  <span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;flex-shrink:0;"></span>
+  Critical — Block Functionality (3 items)
+</div>
+
+<div class="gap-item critical">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">No Emma AI inbound webhook handler</div>
+    <div class="desc">Inbound messages from Emma-connected channels (WhatsApp, IG, FB, Telegram) have no handler at /api/webhooks/emma. Without this, those channels are outbound-only. Emma team still building the payload + auth mechanism.</div>
+    <div class="tags-row">
+      <span class="badge onhold" style="padding:2px 8px;">Emma Pending</span>
+      <span class="tag cyan">api/webhooks/emma/route.ts</span>
+      <span class="tag">No route exists yet</span>
+    </div>
+  </div>
+</div>
+
+<div class="gap-item critical">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">RevRa AI Agent — no backend</div>
+    <div class="desc">The floating RevRaAIChat component (bottom-right on all user pages) has a UI but zero backend. lib/ai/tools.ts defines 13 LLM function-calling tools but there's no /api/ai/chat endpoint to wire them to. Needs to be built once Emma provides the right AI integration.</div>
+    <div class="tags-row">
+      <span class="badge pending" style="padding:2px 8px;">Future (Phase 5)</span>
+      <span class="tag yellow">app/api/ai/chat/route.ts</span>
+      <span class="tag">Wire 13 tools from lib/ai/tools.ts</span>
+    </div>
+  </div>
+</div>
+
+<div class="gap-item critical">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">Active call flow — disconnected</div>
+    <div class="desc">/user/calls/active/page.tsx (live call UI with talking points, objection handlers, live notes) has no Twilio integration. No inbound call routing webhook, no active call connection. Future work once Emma handles Twilio.</div>
+    <div class="tags-row">
+      <span class="badge pending" style="padding:2px 8px;">Future</span>
+      <span class="tag purple">app/user/calls/active/page.tsx</span>
+      <span class="tag">Needs Twilio webhook + Emma connection</span>
+    </div>
+  </div>
+</div>
+
+<!-- Significant -->
+<div class="section-title mb-12 mt-24" style="font-size:14px;">
+  <span style="width:8px;height:8px;border-radius:50%;background:var(--orange);display:inline-block;flex-shrink:0;"></span>
+  Significant — Missing Tables + Features (5 items)
+</div>
+
+<div class="gap-item significant">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">Lead Marketplace tables missing</div>
+    <div class="desc">Future Lead Marketplace feature needs 5 tables that don't exist: marketplace_leads, lead_tiers, marketplace_transactions, subscriptions, bulk_upload_jobs</div>
+    <div class="tags-row">
+      <span class="badge pending" style="padding:2px 8px;">Next Phase</span>
+      <span class="tag orange">supabase/schema.sql</span>
+      <span class="tag">New tables needed</span>
+    </div>
+  </div>
+</div>
+
+<div class="gap-item significant">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">No email provider implementation</div>
+    <div class="desc">sendgrid_api_key exists in workspaces table but no client library, no API routes, no email sending. message_channel enum has 'email' but it's unused. Decide: SendGrid or Resend?</div>
+    <div class="tags-row">
+      <span class="badge pending" style="padding:2px 8px;">Pending</span>
+      <span class="tag">lib/email/client.ts (new)</span>
+      <span class="tag">lib/sendgrid/ or lib/resend/</span>
+    </div>
+  </div>
+</div>
+
+<div class="gap-item significant">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">No Stripe integration</div>
+    <div class="desc">admin/subscriptions page has Stripe portal link but it's mocked. No webhook handler, no payment processing, no invoices table, no Stripe Connect for Lead Marketplace payouts.</div>
+    <div class="tags-row">
+      <span class="badge pending" style="padding:2px 8px;">Pending</span>
+      <span class="tag">lib/stripe/client.ts (new)</span>
+      <span class="tag">2% RevRa cut via Stripe Connect</span>
+    </div>
+  </div>
+</div>
+
+<div class="gap-item significant">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">No notifications system</div>
+    <div class="desc">No notifications table for in-app notifications. No /api/notifications/ route. No notification center in the UI (the bell icon in Shell does nothing).</div>
+    <div class="tags-row">
+      <span class="badge pending" style="padding:2px 8px;">Pending</span>
+      <span class="tag">supabase: notifications table</span>
+      <span class="tag">app/api/notifications/</span>
+    </div>
+  </div>
+</div>
+
+<div class="gap-item significant">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">Missing DB column: leads.created_by</div>
+    <div class="desc">The plan calls for tracking who created each lead (agent vs admin) but there's no created_by FK → users(id) column on the leads table. Currently only assigned_agent_id exists.</div>
+    <div class="tags-row">
+      <span class="badge pending" style="padding:2px 8px;">Schema Fix</span>
+      <span class="tag orange">supabase/schema.sql</span>
+      <span class="tag">ALTER TABLE leads ADD COLUMN created_by UUID REFERENCES users(id)</span>
+    </div>
+  </div>
+</div>
+
+<div class="gap-item significant">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">Missing DB column: messages.is_read</div>
+    <div class="desc">Read receipt tracking for messages not in schema. Planned per docs but not implemented.</div>
+    <div class="tags-row">
+      <span class="badge pending" style="padding:2px 8px;">Schema Fix</span>
+      <span class="tag orange">supabase/schema.sql</span>
+      <span class="tag">ALTER TABLE messages ADD COLUMN is_read BOOLEAN DEFAULT FALSE</span>
+    </div>
+  </div>
+</div>
+
+<!-- Minor -->
+<div class="section-title mb-12 mt-24" style="font-size:14px;">
+  <span style="width:8px;height:8px;border-radius:50%;background:var(--yellow);display:inline-block;flex-shrink:0;"></span>
+  Minor — Nice to Have (4 items)
+</div>
+
+<div class="gap-item minor">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">No error/404 pages</div>
+    <div class="desc">No dedicated error pages or 404 handling in the app root.</div>
+    <div class="tags-row">
+      <span class="tag yellow">app/error.tsx</span>
+      <span class="tag">app/not-found.tsx</span>
+    </div>
+  </div>
+</div>
+
+<div class="gap-item minor">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">No general audit log table</div>
+    <div class="desc">webhooks_log exists for incoming webhooks but no general audit trail for data changes (who updated what, when). Could use the pipeline_moves trigger pattern.</div>
+    <div class="tags-row">
+      <span class="tag">supabase: audit_log table (future)</span>
+    </div>
+  </div>
+</div>
+
+<div class="gap-item minor">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">No route-level layout files</div>
+    <div class="desc">No /app/(user)/layout.tsx, /app/(admin)/layout.tsx — all auth checks per-route. Could consolidate auth into route-group layouts for cleaner code.</div>
+    <div class="tags-row">
+      <span class="tag">Optional refactor</span>
+      <span class="tag">Shell is imported per-page — works fine</span>
+    </div>
+  </div>
+</div>
+
+<div class="gap-item minor">
+  <div class="priority"></div>
+  <div class="content">
+    <div class="title">No mobile-responsive layout</div>
+    <div class="desc">All responsive logic is inline in page components. Could create a MobileShell variant for the sidebar nav collapse behavior on small screens.</div>
+    <div class="tags-row">
+      <span class="tag">Optional UX improvement</span>
+      <span class="tag">MobileNav component (future)</span>
+    </div>
+  </div>
+</div>
+
+<div class="section-title mb-16 mt-24">
+  <span class="icon" style="background:rgba(34,197,94,0.12);color:var(--green)">◈</span>
+  Fixes Applied in This Session
+</div>
+
+<div class="card mb-16">
+  <div class="int-list">
+    <div class="int-item"><div class="name"><span class="badge built" style="padding:2px 8px;">Fixed</span> Shell nav: added 6 missing user pages</div><div class="meta"><span class="mono text-sm dim">components/layouts/Shell.tsx</span></div></div>
+    <div class="int-item"><div class="name"><span class="badge built" style="padding:2px 8px;">Fixed</span> Shell nav: added Workflows to admin nav</div><div class="meta"><span class="mono text-sm dim">components/layouts/Shell.tsx</span></div></div>
+    <div class="int-item"><div class="name"><span class="badge built" style="padding:2px 8px;">Fixed</span> Shell nav: renamed "Leads" → "Pipeline" → /user/pipeline</div><div class="meta"><span class="mono text-sm dim">components/layouts/Shell.tsx</span></div></div>
+    <div class="int-item"><div class="name"><span class="badge built" style="padding:2px 8px;">Fixed</span> Pipeline list view: categorized stage grouping + filters (type, source, score)</div><div class="meta"><span class="mono text-sm dim">app/user/pipeline/page.tsx</span></div></div>
+    <div class="int-item"><div class="name"><span class="badge built" style="padding:2px 8px;">Fixed</span> /user/leads → redirects to /user/pipeline</div><div class="meta"><span class="mono text-sm dim">app/user/leads/page.tsx</span></div></div>
+    <div class="int-item"><div class="name"><span class="badge built" style="padding:2px 8px;">Fixed</span> /user/texts → redirects to /user/conversations</div><div class="meta"><span class="mono text-sm dim">app/user/texts/page.tsx</span></div></div>
+    <div class="int-item"><div class="name"><span class="badge built" style="padding:2px 8px;">Fixed</span> Emma: platform-level env var only, no DB storage</div><div class="meta"><span class="mono text-sm dim">lib/emma/client.ts + app/api/emma/setup/route.ts</span></div></div>
+    <div class="int-item"><div class="name"><span class="badge built" style="padding:2px 8px;">Fixed</span> Active call page kept as deep-link only (no nav)</div><div class="meta"><span class="mono text-sm dim">app/user/calls/active/page.tsx</span></div></div>
+  </div>
+</div>
+
+</div><!-- /gaps -->
+
+</div><!-- /main -->
+
+<script>
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    this.classList.add('active');
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + this.getAttribute('data-view')).classList.add('active');
+  });
+});
+
+function filterPages(query) {
+  query = query.toLowerCase();
+  document.querySelectorAll('.page-item').forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(query) ? '' : 'none';
+  });
+}
+</script>
+
+</body>
+</html>
